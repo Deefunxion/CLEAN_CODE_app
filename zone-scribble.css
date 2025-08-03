@@ -1,11 +1,3 @@
-/**
- * Zone-Based Scribble CSS - AI Orchestrator's Ascent
- * 
- * Minimal styling για zone-based scribble functionality
- * Καθαρό UI χωρίς άχρηστα στοιχεία
- */
-
-/* Base Overlay System */
 .zone-overlay {
     position: absolute !important;
     top: 0;
