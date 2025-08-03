@@ -399,10 +399,10 @@ class ZoneScribble {
      * Get absolute position accounting for scroll
      */
     getAbsolutePosition(clientX, clientY) {
-        const rect = this.canvas.getBoundingClientRect();
+        // Direct document coordinates - works with any content
         return {
-            x: clientX - rect.left + this.scrollOffset.x,
-            y: clientY - rect.top + this.scrollOffset.y
+            x: clientX + window.pageXOffset,
+            y: clientY + window.pageYOffset
         };
     }
 
