@@ -1,0 +1,282 @@
+/**
+ * Zone-Based Scribble CSS - AI Orchestrator's Ascent
+ * 
+ * Minimal styling για zone-based scribble functionality
+ * Καθαρό UI χωρίς άχρηστα στοιχεία
+ */
+
+/* Base Overlay System */
+.zone-overlay {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.zone-overlay canvas {
+    pointer-events: auto;
+}
+
+/* Zone Controls - Minimal Design */
+.zone-controls {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Zone Buttons */
+.zone-btn {
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 36px;
+    min-height: 36px;
+}
+
+.zone-btn.close {
+    background: #ef4444;
+    color: white;
+}
+
+.zone-btn.close:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+.zone-btn.clear {
+    background: #f59e0b;
+    color: white;
+}
+
+.zone-btn.clear:hover {
+    background: #d97706;
+    transform: scale(1.05);
+}
+
+.zone-btn:active {
+    transform: scale(0.95);
+}
+
+/* Layout-specific styling */
+
+/* Desktop Layout */
+.zone-controls.layout-desktop .zone-btn {
+    width: 40px;
+    height: 40px;
+    margin: 4px 0;
+}
+
+/* Mobile Horizontal Layout */
+.zone-controls.layout-mobile-horizontal {
+    max-width: 60px;
+}
+
+.zone-controls.layout-mobile-horizontal .zone-btn {
+    width: 44px;
+    height: 44px;
+    margin: 6px 0;
+}
+
+/* Mobile Vertical Layout */
+.zone-controls.layout-mobile-vertical .zone-btn {
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+}
+
+/* ===========================================
+   RESPONSIVE BREAKPOINTS
+   =========================================== */
+
+/* Mobile Portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+    .zone-controls.layout-mobile-vertical {
+        top: 5px !important;
+        padding: 4px 8px !important;
+    }
+    
+    .zone-controls.layout-mobile-vertical .zone-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+}
+
+/* Mobile Landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+    .zone-controls.layout-mobile-horizontal {
+        top: 15px !important;
+        right: 10px !important;
+        padding: 6px 4px !important;
+    }
+    
+    .zone-controls.layout-mobile-horizontal .zone-btn {
+        width: 40px;
+        height: 40px;
+        margin: 4px 0;
+    }
+}
+
+/* ===========================================
+   TOUCH OPTIMIZATIONS
+   =========================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    .zone-overlay canvas {
+        cursor: default;
+        touch-action: none; /* Prevent scrolling while drawing */
+    }
+    
+    /* Ensure minimum touch target size */
+    .zone-btn {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+    
+    /* Touch feedback */
+    .zone-btn:active {
+        transform: scale(0.9);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   =========================================== */
+
+/* Focus states */
+.zone-btn:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .zone-btn {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .zone-btn {
+        transition: none;
+    }
+}
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+
+/* Control panel entrance */
+.zone-controls.layout-desktop,
+.zone-controls.layout-mobile-horizontal {
+    animation: slideInFromRight 0.3s ease-out;
+}
+
+.zone-controls.layout-mobile-vertical {
+    animation: slideInFromTop 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===========================================
+   ZONE-SPECIFIC CURSOR BEHAVIOR
+   =========================================== */
+
+/* Default cursor in FIA zone (text area) */
+.zone-overlay canvas {
+    cursor: default;
+}
+
+/* Drawing cursor hint in SIZ zones - θα προστεθεί με JavaScript */
+.zone-overlay canvas.siz-zone {
+    cursor: crosshair;
+}
+
+.zone-overlay canvas.fia-zone {
+    cursor: text;
+}
+
+/* ===========================================
+   VISUAL DEBUGGING (Hidden by default)
+   =========================================== */
+
+/* Zone visualization - ενεργοποιείται μόνο για debugging */
+.zone-debug-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+    background: linear-gradient(90deg, 
+        rgba(34, 197, 94, 0.1) 0%,     /* Left SIZ - Green */
+        rgba(34, 197, 94, 0.1) 15%, 
+        rgba(251, 191, 36, 0.05) 15%,  /* Left Buffer - Yellow */
+        rgba(251, 191, 36, 0.05) 20%, 
+        rgba(239, 68, 68, 0.05) 20%,   /* FIA Zone - Red */
+        rgba(239, 68, 68, 0.05) 80%, 
+        rgba(251, 191, 36, 0.05) 80%,  /* Right Buffer - Yellow */
+        rgba(251, 191, 36, 0.05) 85%, 
+        rgba(34, 197, 94, 0.1) 85%,    /* Right SIZ - Green */
+        rgba(34, 197, 94, 0.1) 100%
+    );
+    display: none; /* Κρυφό by default */
+}
+
+/* Zone labels για debugging */
+.zone-debug-label {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+    z-index: 999;
+    display: none; /* Κρυφό by default */
+}
+
+.zone-debug-label.left-siz {
+    left: 7.5%; /* Center of left SIZ zone */
+}
+
+.zone-debug-label.fia {
+    left: 50%; /* Center of FIA zone */
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.zone-debug-label.right-siz {
+    right: 7.5%; /* Center of right SIZ zone */
+}
