@@ -1,3 +1,12 @@
+/**
+ * Zone-Based Scribble Module - AI Orchestrator's Ascent
+ * 
+ * Σωστή υλοποίηση με SIZ και FIA zones:
+ * - SIZ zones (15% αριστερά, 15% δεξιά): Μόνο εκεί μπορεί να ξεκινήσει ink
+ * - FIA zone (κεντρικό 70%): ΔΕΝ μπορεί να ξεκινήσει ink - μόνο κείμενο
+ * - 5% buffer zones για διαχωρισμό
+ * - Ink fade over text για διατήρηση αναγνωσιμότητας
+ */
 .zone-overlay {
     position: absolute !important;
     top: 0;
