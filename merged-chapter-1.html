@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Orchestrator's Ascent - Κεφάλαιο 1</title>
+    
+    <!-- Inline CSS για immediate testing -->
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-secondary: #1e40af;
+            --color-success: #22c55e;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #ffffff;
+            --color-bg-secondary: #f9fafb;
+            --color-border: #e5e7eb;
+            
+            --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            
+            --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --z-dropdown: 1000;
+            --z-sticky: 1020;
+            --z-modal: 1050;
+            --z-toast: 1060;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            line-height: 1.6;
+            color: var(--color-text);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--color-border);
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--space-4);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--color-text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Navigation */
+        .global-nav {
+            background: var(--color-bg);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-4) var(--space-6);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: var(--space-6);
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-base);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-6);
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+
+        .chapter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+
+        .chapter-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-light);
+            margin-bottom: var(--space-4);
+        }
+
+        .chapter-meta {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: var(--space-8);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: var(--space-4);
+        }
+
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--color-text);
+        }
+
+        .section-content p {
+            margin-bottom: var(--space-4);
+        }
+
+        .section-content ul {
+            margin-left: var(--space-6);
+            margin-bottom: var(--space-4);
+        }
+
+        .section-content li {
+            margin-bottom: var(--space-2);
+        }
+
+        /* Exercise Section */
+        .exercise-section {
+            background: #fef3c7;
+            border: 2px solid var(--color-warning);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin: var(--space-8) 0;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .exercise-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--color-warning);
+        }
+
+        .exercise-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .exercise-content {
+            margin-bottom: var(--space-4);
+            color: #92400e;
+        }
+
+        .exercise-button {
+            background: var(--color-warning);
+            color: white;
+            border: none;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .exercise-button:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        /* AI-Q Indicator */
+        .aiq-indicator {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: var(--transition-base);
+            z-index: var(--z-sticky);
+        }
+
+        .aiq-indicator:hover {
+            transform: scale(1.05);
+        }
+
+        .aiq-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .aiq-label {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        /* Interactive Reading Enhancements */
+        .paragraph-interaction-container,
+        .element-interaction-container {
+            position: relative;
+            margin: 1em 0;
+            padding-right: 60px;
+        }
+        
+        .commit-button {
+            position: absolute;
+            right: -50px;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            background-color: #10B981;
+            color: white;
+            border: 2px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        
+        .commit-button.visible {
+            opacity: 1;
+            right: 10px;
+            pointer-events: auto;
+        }
+        
+        .commit-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .commit-button.clicked {
+            animation: micro-effect 0.4s ease-out forwards;
+        }
+        
+        @keyframes micro-effect {
+            0% {
+                transform: scale(1);
+                background: #10B981;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            }
+            25% {
+                transform: scale(1.2);
+                background: radial-gradient(circle, #10B981 0%, #059669 100%);
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+            }
+            50% {
+                transform: scale(1.6);
+                background: radial-gradient(circle, #34D399 0%, #10B981 100%);
+                opacity: 0.8;
+                box-shadow: 0 0 30px rgba(52, 211, 153, 1);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+                background: #A7F3D0;
+            }
+        }
+        
+        /* Brain cell animations */
+        .brain-cell-active {
+            animation: brain-cell-pulse 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+        }
+        
+        @keyframes brain-cell-pulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+            }
+        }
+        
+        /* Typography tiers for committed elements */
+        .p-committed,
+        .element-committed {
+            background-color: #F0FDF4;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 16px 0;
+        }
+        
+        /* Level 1: AI-Q 100-119 */
+        .p-committed.level-1,
+        .element-committed.level-1 {
+            background-color: #ECFDF5;
+            text-align: justify;
+            line-height: 1.7;
+            padding: 10px 16px;
+            border-left: 3px solid #10B981;
+        }
+        
+        /* Level 2: AI-Q 120-139 */
+        .p-committed.level-2,
+        .element-committed.level-2 {
+            background-color: #D1FAE5;
+            text-align: justify;
+            line-height: 1.7;
+            text-indent: 2em;
+            padding: 12px 20px;
+            border-left: 4px solid #059669;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Level 3: AI-Q 140-159 */
+        .p-committed.level-3,
+        .element-committed.level-3 {
+            background-color: #A7F3D0;
+            text-align: justify;
+            line-height: 1.75;
+            text-indent: 2em;
+            font-family: "Georgia", "Palatino Linotype", serif;
+            font-size: 16.5px;
+            padding: 14px 24px;
+            border-left: 5px solid #047857;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        
+        /* Mobile Portrait - Better content width and readability */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .nav-content {
+                padding: 0 var(--space-4);
+            }
+            
+            .main-content {
+                padding: var(--space-6) var(--space-4);
+                margin: 10px;
+                /* Respect the 55% FIA zone for better readability */
+                max-width: 85%;
+                margin: 10px auto;
+            }
+            
+            .chapter-title {
+                font-size: 1.8rem;
+            }
+            
+            .chapter-meta {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+            
+            .aiq-indicator {
+                width: 60px;
+                height: 60px;
+                right: 10px;
+                top: 70px;
+            }
+            
+            .aiq-value {
+                font-size: 14px;
+            }
+            
+            /* Better typography for mobile vertical */
+            .section-content {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Mobile Landscape - Respect SIZ/FIA zones */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .nav-content {
+                padding: 0 var(--space-3);
+            }
+            
+            .main-content {
+                /* Content should stay within the 55% FIA zone */
+                max-width: 50%;
+                margin: 10px auto;
+                padding: var(--space-4) var(--space-6);
+                /* Add breathing room from edges */
+                position: relative;
+                left: 0;
+            }
+            
+            .chapter-title {
+                font-size: 1.6rem;
+            }
+            
+            .chapter-meta {
+                flex-direction: row;
+                gap: var(--space-3);
+                justify-content: center;
+            }
+            
+            .aiq-indicator {
+                width: 50px;
+                height: 50px;
+                right: 8px;
+                top: 60px;
+            }
+            
+            .aiq-value {
+                font-size: 12px;
+            }
+            
+            /* Compact typography for landscape */
+            .section-content {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+                margin-bottom: var(--space-3);
+            }
+            
+            .content-section {
+                margin-bottom: var(--space-6);
+            }
+            
+            .exercise-section {
+                margin: var(--space-6) 0;
+                padding: var(--space-4);
+            }
+        }
+        
+        /* General mobile styles */
+        @media (max-width: 768px) {
+            .paragraph-interaction-container,
+            .element-interaction-container {
+                padding-right: 50px;
+            }
+            
+            .commit-button {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+                /* Enhanced touch interaction */
+                transition: all 0.2s ease;
+            }
+            
+            /* Better touch targets for mobile */
+            .commit-button.visible {
+                transform: scale(1.05);
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+            }
+            
+            /* Touch feedback */
+            .commit-button:active {
+                transform: scale(0.95);
+            }
+        }
+        
+        /* Touch device specific improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .commit-button {
+                /* Larger touch target */
+                min-width: 32px;
+                min-height: 32px;
+                /* Better visibility */
+                border: 2px solid rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(2px);
+            }
+            
+            .commit-button.visible {
+                /* More prominent on touch devices */
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+                border-color: white;
+            }
+        }
+    </style>
+
+    <!-- Zone-Based Scribble CSS -->
+    <link rel="stylesheet" href="zone-scribble.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Φόρτωση AI Orchestrator's Ascent...</div>
+        </div>
+
+        <!-- Global Navigation -->
+        <nav class="global-nav hidden" id="global-nav">
+            <div class="nav-content">
+                <div class="nav-brand">📚 AI Orchestrator's Ascent</div>
+                <ul class="nav-menu">
+                    <li><button onclick="toggleZoneScribble()" class="nav-link">✏️ Σημειώσεις</button></li>
+                    <li><button onclick="showStats()" class="nav-link">📈 Στατιστικά</button></li>
+                    <li><button onclick="toggleZoneGuide()" class="nav-link">👁️ Zone Guide</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content hidden" id="main-content">
+            <div id="reading-content-wrapper">
+                <div class="chapter-header">
+                    <h1 class="chapter-title">Κεφάλαιο 1: Η Πρώτη σας Συζήτηση</h1>
+                    <p class="chapter-subtitle">Πώς να Ενημερώσετε έναν Λαμπρό, Κυριολεκτικό Ασκούμενο</p>
+                    <div class="chapter-meta">
+                        <div class="meta-item">
+                            <span>📚</span>
+                            <span>Επίπεδο: Level 1: The Novice</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>Διάρκεια: 20 λεπτά</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="paragraph-interaction-container">
+                        <p class="section-content">Φανταστείτε ότι μόλις προσλάβατε τον πιο έξυπνο ασκούμενο που είχατε ποτέ. Έχει φωτογραφική μνήμη, έχει διαβάσει κυριολεκτικά όλο το διαδίκτυο, και μπορεί να επεξεργαστεί πληροφορίες με ταχύτητα που ξεπερνά την ανθρώπινη φαντασία. Υπάρχει όμως ένα πρόβλημα: είναι απόλυτα κυριολεκτικός και δεν έχει καμία κρίση.</p>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="intro">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="element-interaction-container">
+                        <h2 class="section-title">Αυτό είναι η ΤΝ</h2>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="title-ai-definition">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <p class="section-content">Όχι ένας εξωγήινος νους. Όχι ένας ψηφιακός θεός. Ένας εξαιρετικά ικανός, εξαιρετικά γρήγορος, εξαιρετικά κυριολεκτικός ασκούμενος.</p>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="ai-definition">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="element-interaction-container">
+                        <h2 class="section-title">Το Μεγαλύτερο Ψέμα της Εποχής μας</h2>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="title-biggest-lie">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <p class="section-content">Το μεγαλύτερο εμπόδιο στη στρατηγική χρήση της ΤΝ δεν είναι τεχνικό—είναι εννοιολογικό. Μας έχουν πείσει ότι η ΤΝ "σκέφτεται." Δεν σκέφτεται. Μας έχουν πείσει ότι "καταλαβαίνει." Δεν καταλαβαίνει. Μας έχουν πείσει ότι είναι "έξυπνη." Είναι απλώς πολύ καλή στο να μιμείται την εξυπνάδα.</p>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="biggest-lie">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="element-interaction-container">
+                        <h2 class="section-title">Τι Κάνει Πραγματικά η ΤΝ: Η Μετάφορα του Ασκούμενου</h2>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="title-what-ai-does">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <p class="section-content">Ας καταστρέψουμε τη μυθολογία και ας αντικαταστήσουμε τη με κάτι χρήσιμο. Η ΤΝ είναι σαν έναν εξαιρετικά ταλαντούχο ασκούμενο με συγκεκριμένα δυνατά σημεία και αδυναμίες.</p>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="what-ai-does">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="element-interaction-container">
+                        <h2 class="section-title">Δυνατά Σημεία της ΤΝ</h2>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="title-strengths">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <ul class="section-content">
+                            <li>Φωτογραφική μνήμη για τεράστιες ποσότητες πληροφοριών</li>
+                            <li>Ταχύτητα επεξεργασίας που ξεπερνά την ανθρώπινη κατανόηση</li>
+                            <li>Ακούραστη εργασία 24/7 χωρίς παράπονα</li>
+                            <li>Εξαιρετική στην αναγνώριση μοτίβων και στη σύνθεση πληροφοριών</li>
+                            <li>Δεν έχει ego, δεν παίρνει προσωπικά τις διορθώσεις</li>
+                        </ul>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="strengths">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="element-interaction-container">
+                        <h2 class="section-title">Αδυναμίες της ΤΝ</h2>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="title-weaknesses">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <ul class="section-content">
+                            <li>Δεν έχει κρίση ή κοινή λογική</li>
+                            <li>Παίρνει τις οδηγίες απόλυτα κυριολεκτικά</li>
+                            <li>Δεν καταλαβαίνει το πλαίσιο εκτός αν του το εξηγήσετε ρητά</li>
+                            <li>Μπορεί να "παραισθάνεται" πληροφορίες που ακούγονται λογικές</li>
+                            <li>Δεν μπορεί να κρίνει την ποιότητα των αποτελεσμάτων του</li>
+                        </ul>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="weaknesses">
+                            ✓
+                        </button>
+                    </div>
+                </div>
+
+                <div class="exercise-section">
+                    <div class="element-interaction-container">
+                        <div class="exercise-header">
+                            <span class="exercise-icon">🔬</span>
+                            <h3 class="exercise-title">Πείραμα: Δοκιμάστε τον κυριολεκτικό ασκούμενο</h3>
+                        </div>
+                        <button class="commit-button" onclick="app.commitElement(this)" data-element="exercise-title">
+                            ✓
+                        </button>
+                    </div>
+                    <div class="paragraph-interaction-container">
+                        <div class="exercise-content">
+                            <p><strong>Ανοίξτε το ChatGPT ή οποιοδήποτε δωρεάν εργαλείο ΤΝ και δοκιμάστε αυτά τα τρία πειράματα:</strong></p>
+                            
+                            <p><strong>Πείραμα 1: Η Παγίδα της Κυριολεκτικότητας</strong><br>
+                            Ρωτήστε: "Γράψε μου μια συνταγή για σαλάτα για 100 άτομα."<br>
+                            <em>Παρατήρηση:</em> Θα σας δώσει μια τέλεια αναλογική συνταγή. Δεν θα ρωτήσει τι είδους εκδήλωση είναι.</p>
+                            
+                            <p><strong>Πείραμα 2: Η Παγίδα της Αυθεντίας</strong><br>
+                            Ρωτήστε: "Ποια είναι η γνώμη του [όνομα διάσημου προσώπου] για [τρέχον γεγονός];"<br>
+                            <em>Παρατήρηση:</em> Μπορεί να σας δώσει πειστική απάντηση ακόμα κι αν το πρόσωπο δεν έχει εκφράσει ποτέ γνώμη.</p>
+                            
+                            <p><strong>Πείραμα 3: Η Παγίδα της Συμπλήρωσης</strong><br>
+                            Ρωτήστε: "Τελείωσε αυτή τη φράση: 'Η καλύτερη στρατηγική για την εταιρεία μου είναι...'"<br>
+                            <em>Παρατήρηση:</em> Θα δώσει γενική απάντηση χωρίς να ξέρει τίποτα για την εταιρεία σας.</p>
+                        </div>
+                        <button class="commit-button" onclick="app.commitParagraph(this)" data-paragraph="exercise-content">
+                            ✓
+                        </button>
+                    </div>
+                    <button class="exercise-button" onclick="app.completeExercise('experiment-1')">
+                        Ξεκίνα Πείραμα
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- AI-Q Indicator -->
+        <div class="aiq-indicator hidden" id="aiq-indicator">
+            <div class="aiq-value" id="aiq-value">85</div>
+            <div class="aiq-label">AI-Q</div>
+        </div>
+    </div>
+
+    <!-- Zone indicator -->
+    <div class="zone-indicator" id="zone-indicator" style="
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-size: 14px;
+        z-index: 1002;
+        font-family: monospace;
+        display: none;
+    ">
+        Hover to see zone info
+    </div>
+
+    <!-- Zone visual guide (hidden by default) -->
+    <div class="zone-visual-guide" id="zone-visual-guide" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 998;
+        background: linear-gradient(90deg, 
+            rgba(34, 197, 94, 0.15) 0%, 
+            rgba(34, 197, 94, 0.15) 20%, 
+            rgba(251, 191, 36, 0.1) 20%, 
+            rgba(251, 191, 36, 0.1) 22.5%, 
+            rgba(239, 68, 68, 0.05) 22.5%, 
+            rgba(239, 68, 68, 0.05) 77.5%, 
+            rgba(251, 191, 36, 0.1) 77.5%, 
+            rgba(251, 191, 36, 0.1) 80%, 
+            rgba(34, 197, 94, 0.15) 80%, 
+            rgba(34, 197, 94, 0.15) 100%
+        );
+        display: none;
+    "></div>
+
+    <!-- Load Zone-Based Scribble Module -->
+    <script src="zone-scribble.js"></script>
+    
+    <!-- Inline JavaScript -->
+    <script>
+        // Simple Application Class που συνδυάζει Interactive Reading και Zone Scribble
+        class MergedAIOrchestrator {
+            constructor() {
+                this.currentAIQ = 85;
+                this.pageLoadTime = Date.now();
+                this.zoneGuideVisible = false;
+            }
+
+            async init() {
+                console.log('Initializing Merged AI Orchestrator...');
+                
+                // Simulate loading time
+                await this.delay(1500);
+                
+                // Hide loading screen
+                document.getElementById('loading-screen').classList.add('hidden');
+                
+                // Show main interface
+                document.getElementById('global-nav').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('aiq-indicator').classList.remove('hidden');
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                console.log('Merged AI Orchestrator initialized successfully!');
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            completeExercise(exerciseId) {
+                console.log('Completing exercise:', exerciseId);
+                
+                // Increase AI-Q
+                this.currentAIQ += 5;
+                this.updateAIQDisplay();
+                
+                // Show completion message
+                alert(`Συγχαρητήρια! Ολοκληρώσατε την άσκηση.\nAI-Q +5 (Νέο AI-Q: ${this.currentAIQ})`);
+            }
+            
+            commitParagraph(button) {
+                const container = button.closest('.paragraph-interaction-container');
+                const paragraph = container.querySelector('p, ul');
+                
+                if (paragraph && !paragraph.classList.contains('p-committed')) {
+                    // Add committed styling based on AI-Q level
+                    const level = this.getTypographyLevel();
+                    paragraph.classList.add('p-committed', `level-${level}`);
+                    
+                    // Trigger commit animation
+                    button.classList.add('clicked');
+                    
+                    // Increase AI-Q
+                    this.currentAIQ += 2;
+                    this.updateAIQDisplay();
+                    
+                    // Create electrical spark effect to brain (AI-Q indicator)
+                    this.createElectricalSpark(button, document.getElementById('aiq-indicator'));
+                    
+                    // Hide button after animation
+                    setTimeout(() => {
+                        button.style.display = 'none';
+                    }, 400);
+                }
+            }
+            
+            commitElement(button) {
+                const container = button.closest('.element-interaction-container');
+                const element = container.querySelector('h1, h2, h3, h4, h5, h6, .exercise-header');
+                
+                if (element && !element.classList.contains('element-committed')) {
+                    // Add committed styling based on AI-Q level
+                    const level = this.getTypographyLevel();
+                    element.classList.add('element-committed', `level-${level}`);
+                    
+                    // Trigger commit animation
+                    button.classList.add('clicked');
+                    
+                    // Increase AI-Q
+                    this.currentAIQ += 3;
+                    this.updateAIQDisplay();
+                    
+                    // Create electrical spark effect to brain (AI-Q indicator)
+                    this.createElectricalSpark(button, document.getElementById('aiq-indicator'));
+                    
+                    // Hide button after animation
+                    setTimeout(() => {
+                        button.style.display = 'none';
+                    }, 400);
+                }
+            }
+            
+            getTypographyLevel() {
+                if (this.currentAIQ >= 160) return 4;
+                if (this.currentAIQ >= 140) return 3;
+                if (this.currentAIQ >= 120) return 2;
+                if (this.currentAIQ >= 100) return 1;
+                return 0;
+            }
+            
+            createElectricalSpark(fromElement, toElement) {
+                const fromRect = fromElement.getBoundingClientRect();
+                const toRect = toElement.getBoundingClientRect();
+                
+                // Create spark element
+                const spark = document.createElement('div');
+                spark.style.cssText = `
+                    position: fixed;
+                    width: 6px;
+                    height: 6px;
+                    background: #00FFFF;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    left: ${fromRect.left + fromRect.width / 2}px;
+                    top: ${fromRect.top + fromRect.height / 2}px;
+                    animation: electrical-spark-travel 0.8s ease-out forwards;
+                `;
+                
+                // Define spark travel animation dynamically
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes electrical-spark-travel {
+                        0% {
+                            left: ${fromRect.left + fromRect.width / 2}px;
+                            top: ${fromRect.top + fromRect.height / 2}px;
+                            transform: scale(1);
+                            opacity: 1;
+                            box-shadow: 0 0 12px #00FFFF;
+                        }
+                        100% {
+                            left: ${toRect.left + toRect.width / 2}px;
+                            top: ${toRect.top + toRect.height / 2}px;
+                            transform: scale(0.5);
+                            opacity: 0;
+                            box-shadow: 0 0 30px #00FFFF;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                document.body.appendChild(spark);
+                
+                // Add brain cell pulse effect
+                const aiqIndicator = document.getElementById('aiq-indicator');
+                aiqIndicator.classList.add('brain-cell-active');
+                
+                // Remove spark and effects after animation
+                setTimeout(() => {
+                    if (spark.parentNode) spark.parentNode.removeChild(spark);
+                    if (style.parentNode) style.parentNode.removeChild(style);
+                    aiqIndicator.classList.remove('brain-cell-active');
+                }, 800);
+            }
+
+            updateAIQDisplay() {
+                const aiqValue = document.getElementById('aiq-value');
+                if (aiqValue) {
+                    aiqValue.textContent = this.currentAIQ;
+                }
+            }
+
+            setupInteractionSystem() {
+                // Detect if device supports touch
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                
+                if (isTouchDevice) {
+                    console.log('📱 Setting up touch interaction system');
+                    this.setupTouchInteraction();
+                } else {
+                    console.log('🖱️ Setting up hover interaction system');
+                    this.setupHoverInteraction();
+                }
+            }
+
+            setupTouchInteraction() {
+                let currentVisibleButton = null;
+                let hideTimeout = null;
+                let touchStartTarget = null;
+
+                // Touch start - show popup
+                document.addEventListener('touchstart', (e) => {
+                    const container = e.target.closest('.paragraph-interaction-container, .element-interaction-container');
+                    if (container) {
+                        touchStartTarget = container;
+                        const button = container.querySelector('.commit-button');
+                        
+                        if (button && !button.classList.contains('clicked')) {
+                            // Hide current visible button if different
+                            if (currentVisibleButton && currentVisibleButton !== button) {
+                                currentVisibleButton.classList.remove('visible');
+                                clearTimeout(hideTimeout);
+                            }
+                            
+                            // Show new button
+                            button.classList.add('visible');
+                            currentVisibleButton = button;
+                            
+                            // Clear any pending hide timeout
+                            clearTimeout(hideTimeout);
+                            
+                            console.log('📱 Touch: Button shown for', container.dataset.paragraph || container.dataset.element || 'element');
+                        }
+                    }
+                }, { passive: true });
+
+                // Touch end - start hide timer
+                document.addEventListener('touchend', (e) => {
+                    if (currentVisibleButton && touchStartTarget) {
+                        // Start 1.5 second timer
+                        clearTimeout(hideTimeout);
+                        hideTimeout = setTimeout(() => {
+                            if (currentVisibleButton) {
+                                console.log('📱 Touch: Hiding button after 1.5s');
+                                currentVisibleButton.classList.remove('visible');
+                                currentVisibleButton = null;
+                            }
+                        }, 1500);
+                        
+                        touchStartTarget = null;
+                    }
+                }, { passive: true });
+
+                // Touch move - keep popup visible during scroll
+                document.addEventListener('touchmove', (e) => {
+                    // Touch move doesn't hide the popup
+                    // This allows natural scrolling with popup visible
+                }, { passive: true });
+            }
+
+            setupHoverInteraction() {
+                // Desktop hover behavior
+                document.addEventListener('mouseenter', (e) => {
+                    if (e.target && typeof e.target.closest === 'function') {
+                        const container = e.target.closest('.paragraph-interaction-container, .element-interaction-container');
+                        if (container) {
+                            const button = container.querySelector('.commit-button');
+                            if (button && !button.classList.contains('clicked')) {
+                                button.classList.add('visible');
+                            }
+                        }
+                    }
+                }, true);
+                
+                document.addEventListener('mouseleave', (e) => {
+                    if (e.target && typeof e.target.closest === 'function') {
+                        const container = e.target.closest('.paragraph-interaction-container, .element-interaction-container');
+                        if (container) {
+                            const button = container.querySelector('.commit-button');
+                            if (button && !button.classList.contains('clicked')) {
+                                setTimeout(() => {
+                                    if (container && typeof container.matches === 'function' && !container.matches(':hover')) {
+                                        button.classList.remove('visible');
+                                    }
+                                }, 1500);
+                            }
+                        }
+                    }
+                }, true);
+            }
+
+            setupEventListeners() {
+                // AI-Q indicator click
+                const aiqIndicator = document.getElementById('aiq-indicator');
+                if (aiqIndicator) {
+                    aiqIndicator.addEventListener('click', () => {
+                        alert(`Το AI-Q σας είναι: ${this.currentAIQ}\n\nΤο AI-Q αυξάνεται όταν:\n- Ολοκληρώνετε ασκήσεις (+5)\n- Διαβάζετε παραγράφους (+2)\n- Διαβάζετε τίτλους/στοιχεία (+3)\n- Δημιουργείτε σημειώσεις`);
+                    });
+                }
+                
+                // Smart interaction system: hover for desktop, touch for mobile
+                this.setupInteractionSystem();
+                
+                // Zone indicator tracking
+                document.addEventListener('mousemove', (e) => {
+                    if (this.zoneGuideVisible) {
+                        const width = window.innerWidth;
+                        const relativeX = e.clientX / width;
+                        let zoneName = '';
+                        let zoneColor = '';
+                        
+                        if (relativeX <= 0.20) {
+                            zoneName = 'Left SIZ Zone (Can start drawing)';
+                            zoneColor = '#22c55e';
+                        } else if (relativeX <= 0.225) {
+                            zoneName = 'Left Buffer Zone';
+                            zoneColor = '#f59e0b';
+                        } else if (relativeX <= 0.775) {
+                            zoneName = 'FIA Zone (Cannot start drawing)';
+                            zoneColor = '#ef4444';
+                        } else if (relativeX <= 0.80) {
+                            zoneName = 'Right Buffer Zone';
+                            zoneColor = '#f59e0b';
+                        } else {
+                            zoneName = 'Right SIZ Zone (Can start drawing)';
+                            zoneColor = '#22c55e';
+                        }
+                        
+                        const indicator = document.getElementById('zone-indicator');
+                        indicator.textContent = `${zoneName} (${(relativeX * 100).toFixed(1)}%)`;
+                        indicator.style.borderLeft = `4px solid ${zoneColor}`;
+                    }
+                });
+
+                // Responsive handling
+                this.handleResponsive();
+                window.addEventListener('resize', () => this.handleResponsive());
+            }
+
+            handleResponsive() {
+                const isMobile = window.innerWidth <= 768;
+                console.log('Responsive mode:', isMobile ? 'mobile' : 'desktop');
+                
+                // Add mobile class to body for CSS targeting
+                document.body.classList.toggle('mobile-view', isMobile);
+            }
+        }
+
+        // Initialize application
+        let app;
+        document.addEventListener('DOMContentLoaded', function() {
+            app = new MergedAIOrchestrator();
+            app.init().catch(error => {
+                console.error('Failed to initialize application:', error);
+                document.getElementById('loading-screen').innerHTML = `
+                    <div style="text-align: center; color: #ef4444;">
+                        <h2>Σφάλμα Φόρτωσης</h2>
+                        <p>Παρουσιάστηκε πρόβλημα κατά την εκκίνηση της εφαρμογής.</p>
+                        <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+                            Επανάληψη
+                        </button>
+                    </div>
+                `;
+            });
+        });
+
+        // Module activation functions
+        function showStats() {
+            let stats = "📈 Στατιστικά Ανάγνωσης:\n\n";
+            stats += `AI-Q: ${app.currentAIQ}\n`;
+            stats += `Χρόνος στη σελίδα: ${Math.floor((Date.now() - app.pageLoadTime) / 1000)} δευτερόλεπτα\n`;
+            
+            if (window.zoneScribbleInstance) {
+                const scribbleData = window.zoneScribbleInstance.getScribbleData();
+                stats += `Σχέδια/Σημειώσεις: ${scribbleData.paths.length}\n`;
+                stats += `Layout: ${scribbleData.layout}\n`;
+                stats += `Κατάσταση: ${window.zoneScribbleInstance.isActive ? 'Ενεργό' : 'Ανενεργό'}\n`;
+            } else {
+                stats += `Σχέδια/Σημειώσεις: Μη ενεργοποιημένο\n`;
+            }
+            
+            alert(stats);
+        }
+
+        function toggleZoneGuide() {
+            const guide = document.getElementById('zone-visual-guide');
+            const indicator = document.getElementById('zone-indicator');
+            app.zoneGuideVisible = !app.zoneGuideVisible;
+            
+            guide.style.display = app.zoneGuideVisible ? 'block' : 'none';
+            indicator.style.display = app.zoneGuideVisible ? 'block' : 'none';
+            
+            console.log(`Zone guide ${app.zoneGuideVisible ? 'shown' : 'hidden'}`);
+        }
+
+        // Global error handling
+        window.addEventListener('error', function(event) {
+            console.error('Global error:', event.error);
+        });
+
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+    </script>
+</body>
+</html>
